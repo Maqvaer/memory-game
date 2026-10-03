@@ -78,9 +78,9 @@ function createCards() {
             } else if(cards[indexFirstCard].textContent !== cards[indexSecondCard].textContent) {
               console.log('не совпадение');
               setTimeout(function() {
-                cards[indexFirstCard].textContent = '?';
-                cards[indexSecondCard].textContent = '?';
-              }, 1400);
+                cards[indexFirstCard].textContent = '';
+                cards[indexSecondCard].textContent = '';
+              }, 700);
               cardsCounter = 0;
             };
             }
