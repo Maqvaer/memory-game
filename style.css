@@ -30,3 +30,8 @@ body{
    align-items: center;
    justify-content: center;
 }
+
+.button-new-game{
+   padding: 1rem 2rem;
+   border: 1px solid skyblue;
+}
