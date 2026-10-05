@@ -229,7 +229,7 @@ function createCards() {
       value: timeDate[index]
    }));
    tableValue.sort((a,b) => a.key - b.key);
-   if(count.length > 0){
+   if(count.length > 0 && document.getElementsByTagName('tr').length === 0){
     const trHeader = document.createElement('tr');
     const thWin = document.createElement('th');
     const thCount = document.createElement('th');
@@ -255,13 +255,13 @@ function createCards() {
           dialogWinsTable.appendChild(row);
           // console.log(`Count: ${tableValue[i].key}, timeDate: ${tableValue[i].value.getDate()}.${tableValue[i].value.getMonth()}.${tableValue[i].value.getFullYear()}`);
         }
-   } else {
+   } else if(count.length === 0){
      const noDataRow = document.createElement('tr');
      const noDataCell = document.createElement('td');
      noDataCell.setAttribute('colspan', '3');
      noDataCell.textContent = 'Пока нет данных';
      noDataRow.appendChild(noDataCell);
      dialogWinsTable.appendChild(noDataRow);
-   }
+   } 
    });
     
