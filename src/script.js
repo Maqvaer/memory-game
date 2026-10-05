@@ -14,11 +14,34 @@
   header.setAttribute("class", "header");
   document.body.appendChild(header);
   const buttonNewGame = document.createElement("button");
-  buttonNewGame.setAttribute("class", "button-new-game");
+  buttonNewGame.setAttribute("class", "button-game");
   buttonNewGame.setAttribute("id", "new-game");
-  buttonNewGame.appendChild(document.createTextNode('New Game'));
+  buttonNewGame.appendChild(document.createTextNode('Новая игра'));
   header.appendChild(buttonNewGame);
-
+  const buttonWIns = document.createElement("button");
+  buttonWIns.setAttribute("class", "button-game");
+  buttonWIns.setAttribute("id", "wins");
+  buttonWIns.appendChild(document.createTextNode('Таблица лидеров'));
+  header.appendChild(buttonWIns);
+  let countStorage = JSON.parse(localStorage.getItem('count')) || [];
+  let timeStorage = JSON.parse(localStorage.getItem('time')) || [];
+   const dialogWins = document.createElement('dialog');
+   dialogWins.setAttribute('id','dialogWins');
+   dialogWins.setAttribute('closedBy', 'any');
+   const dialogWinsTxt = document.createElement('p');
+   dialogWinsTxt.textContent = `ТОП-10`;
+   dialogWins.appendChild(dialogWinsTxt);
+   const dialogWinsTable = document.createElement('table');
+   dialogWins.appendChild(dialogWinsTable);
+   const dialogWinsDiv = document.createElement('div');
+   dialogWins.appendChild(dialogWinsDiv);
+   const dialogWinsButtonClose = document.createElement('button');
+   dialogWinsButtonClose.textContent = 'Закрыть';
+   dialogWinsButtonClose.addEventListener('click', () => {
+     dialogWins.close();
+   });
+   dialogWinsDiv.appendChild(dialogWinsButtonClose);
+   document.body.appendChild(dialogWins);
 
 function shuffle(array) {
   var m = array.length, t, i;
@@ -43,12 +66,14 @@ function createCards() {
      let pairCounter = 0;
      let indexFirstCard = null;
      let indexSecondCard = null;
+     
     for(let j = 0; j < icon.length*2; j++){
          cards[j] = document.createElement("div");
          cards[j].setAttribute("class", "card");
          cards[j].appendChild(document.createTextNode('?'));
          cardsContainer.appendChild(cards[j]);
         }
+
    if(document.querySelector('.footer')) {
      document.querySelector('.footer').remove();
    }
@@ -73,6 +98,7 @@ function createCards() {
   const pairCount = document.createElement('p');
   pairs.appendChild(pairCount);
   pairCount.textContent = `0`;
+
 
       cards.forEach((card, index) => {
         cardsIcon[index] = icon[index % icon.length];
@@ -104,6 +130,19 @@ function createCards() {
               pairCounter++;
               if(pairCounter === icon.length){
                 // console.log('Все пары найдены!');
+
+                const MAX_LENGTH = 10;
+                if(countStorage.length > MAX_LENGTH){
+                  countStorage.shift();
+                  timeStorage.shift();
+                }
+                countStorage.push(moveCounter);
+                const now = new Date();
+                timeStorage.push(now);
+                // console.log(countStorage,timeStorage);
+                localStorage.setItem('count', JSON.stringify(countStorage));
+                localStorage.setItem('time', JSON.stringify(timeStorage));
+
                 const dialog = document.createElement('dialog');
                 dialog.setAttribute('id', 'dialogWin');
                 dialog.setAttribute('closedBy', 'any');
@@ -114,10 +153,10 @@ function createCards() {
                 dialog.appendChild(buttonContainer);
                 const dialogButton = document.createElement('button');
                 dialogButton.setAttribute('onclick','location.reload()');
-                dialogButton.textContent = 'Новая игра';
+                dialogButton.textContent = 'Играть заново';
                 buttonContainer.appendChild(dialogButton);
                 const dialogButtonClose = document.createElement('button');
-                dialogButtonClose.setAttribute('commandfor', 'dialogWin');
+                dialogButtonClose.setAttribute('autofocus', 'autofocus');
                 dialogButtonClose.addEventListener('click', () => {
                   dialog.remove();
                 });
@@ -177,4 +216,52 @@ function createCards() {
     });
 
 
+   document.getElementById('wins').addEventListener('click', function() {
+   document.getElementById('dialogWins').showModal();
+   let count = JSON.parse(localStorage.getItem("count"));
+   const time = JSON.parse(localStorage.getItem("time"));
+   let timeDate = [];
+   time.forEach((t) => {
+     timeDate.push(new Date(t));
+   });
+    const tableValue = count.map((count, index) => ({
+      key: count,
+      value: timeDate[index]
+   }));
+   tableValue.sort((a,b) => a.key - b.key);
+   if(count.length > 0){
+    const trHeader = document.createElement('tr');
+    const thWin = document.createElement('th');
+    const thCount = document.createElement('th');
+    const thTime = document.createElement('th');
+    thWin.textContent = 'Место';
+    thCount.textContent = 'Сделано ходов';
+    thTime.textContent = 'Дата';
+    trHeader.appendChild(thWin);
+    trHeader.appendChild(thCount);
+    trHeader.appendChild(thTime);
+    dialogWinsTable.appendChild(trHeader);
+        for(let i = 0; i < tableValue.length; i++){
+          const row = document.createElement('tr');
+          const cellWin = document.createElement('td');
+          const cellCount = document.createElement('td');
+          const cellTime = document.createElement('td');
+          cellWin.textContent = i + 1;
+          cellCount.textContent = tableValue[i].key;
+          cellTime.textContent = `${tableValue[i].value.getDate()}.${tableValue[i].value.getMonth()}.${tableValue[i].value.getFullYear()}`;
+          row.appendChild(cellWin);
+          row.appendChild(cellCount);
+          row.appendChild(cellTime);
+          dialogWinsTable.appendChild(row);
+          // console.log(`Count: ${tableValue[i].key}, timeDate: ${tableValue[i].value.getDate()}.${tableValue[i].value.getMonth()}.${tableValue[i].value.getFullYear()}`);
+        }
+   } else {
+     const noDataRow = document.createElement('tr');
+     const noDataCell = document.createElement('td');
+     noDataCell.setAttribute('colspan', '3');
+     noDataCell.textContent = 'Пока нет данных';
+     noDataRow.appendChild(noDataCell);
+     dialogWinsTable.appendChild(noDataRow);
+   }
+   });
     

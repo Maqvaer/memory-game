@@ -10,10 +10,13 @@ body{
    position: relative;
 }
 header{
-   width: 90%;
+   width: fit-content;
    height: fit-content;
    margin: auto;
    padding:0.5rem 1rem;
+   display: flex;
+   justify-content: flex-start;
+   align-items: center;
 }
 .cards-container{
    display: grid;
@@ -42,9 +45,10 @@ header{
    pointer-events: none;
 }
 
-.button-new-game{
+.button-game{
    padding: 1rem 2rem;
    border: 1px solid skyblue;
+   margin: 0.5rem;
 }
 
 .card:hover{
@@ -104,7 +108,7 @@ header{
    align-items: center;
 }
 
-#dialogWin button{
+#dialogWin button, #dialogWins button {
    padding: 0.5rem 1rem;
    margin: 0 10px;
    border: 1px solid white;
@@ -119,6 +123,38 @@ header{
    border: 1px solid skyblue;
    background-color: #8ea9b4;
    transition: all 500ms;
+}
+
+#dialogWins{
+   width: 50vw;
+   min-height: 10vh;
+   height: fit-content;
+   margin: 20vh auto;
+   padding: 2rem;
+   border: 2px solid skyblue;
+   background-color: #ccc;
+}
+#dialogWins p{
+   font-size: 1.5rem;
+   text-align: center;
+   margin: 10px;
+}
+#dialogWins > div {
+   width: 100%;
+   display: flex;
+   justify-content: flex-end;
+   align-items: center;
+}
+
+#dialogWins table{
+   width: 80%;
+   text-align: center;
+   color: #000;
+}
+
+#dialogWins table th{
+   border: 1px solid WHITE;
+   padding: 0.5rem;
 }
 
 @media (min-width: 1280px) {
